@@ -106,6 +106,20 @@ export default function RegistrationForm() {
               {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
             </div>
 
+
+             {/* Email */}
+            <div>
+              <Label className="mb-1">Email</Label>
+              <Input
+                type="email"
+                {...register("email")}
+                placeholder="Enter email"
+                className="ring-0 focus:ring-2 focus:ring-indigo-300"
+                aria-invalid={!!errors.email}
+              />
+              {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
+            </div>
+
             {/* Password */}
             <div>
               <Label className="mb-1">Password</Label>
