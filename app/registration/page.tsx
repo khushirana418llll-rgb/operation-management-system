@@ -1,117 +1,211 @@
+
+// RegistrationForm.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { EyeIcon, EyeOff } from "lucide-react";
-
-import React, { useState } from "react";
-
+import { useState } from "react";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// --------------------- ZOD SCHEMA ----------------------
+import { Card, CardHeader, CardContent, CardTitle, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
-const registrationSchema = z.object({
-  fullName: z.string().min(5, "Minimum 5 characters required"),
-  emailId: z.string().email("Invalid email address"),
+// ---- Zod schema ----
+const formSchema = z.object({
+  username: z.string().min(2, "Username must be at least 2 letters").regex(/^[A-Za-z]+$/, "Only alphabets allowed"),
+  email: z.string().email("Invalid email"),
   password: z.string().min(8, "Minimum 8 characters required"),
+  phone: z.string().regex(/^[0-9]{10}$/, "Enter 10 digit phone number"),
+  age: z.string().regex(/^[0-9]{1,3}$/, "Enter valid age"),
+  gender: z.string().min(1, "Please select gender"),
+  city: z.string().min(2, "City must be at least 2 characters"),
 });
 
-type RegistrationFormType = z.infer<typeof registrationSchema>;
+type FormData = z.infer<typeof formSchema>;
 
-// --------------------------------------------------------
+export default function RegistrationForm() {
+  const [showPass, setShowPass] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-const Page = () => {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const RegistrationForm = useForm<RegistrationFormType>({
-    resolver: zodResolver(registrationSchema),
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      phone: "",
+      age: "",
+      gender: "",
+      city: "",
+    },
+    mode: "onTouched",
   });
 
-  function onSubmit(data: RegistrationFormType) {
-    alert("Registered Successfully!");
-    console.log(data);
-  }
+  const { register, handleSubmit, formState, setValue, watch, reset } = form;
+  const { errors } = formState;
+
+  const onSubmit = async (data: FormData) => {
+    setSubmitting(true);
+    try {
+      // Simulate API call (replace with real API)
+      console.log("Submitted data:", data);
+      // show a simple success (replace with toast if you want)
+      alert("Registration Successful!");
+      reset();
+    } catch (e) {
+      console.error(e);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // watch gender to keep Select controlled
+  const genderValue = watch("gender");
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <Card className="w-full max-w-md p-4">
-        <CardHeader>
-          <CardTitle className=" flex justify-center font-bold text-3xl">
-            Registration Form
-          </CardTitle>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+      <Card className="w-full max-w-md rounded-2xl shadow-xl overflow-visible">
+        <CardHeader className="bg-transparent">
+          <CardTitle className="text-center text-2xl font-semibold">Registration Form</CardTitle>
         </CardHeader>
 
-        <form onSubmit={RegistrationForm.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
+        <CardContent className="pt-2 px-6 pb-0">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-            {/* Full Name */}
+            {/* Username */}
             <div>
-              <Label>Full Name</Label>
+              <Label className="mb-1">Username</Label>
               <Input
-                type="text"
-                placeholder="Full name"
-                {...RegistrationForm.register("fullName")}
+                {...register("username")}
+                placeholder="Enter username"
+                className="ring-0 focus:ring-2 focus:ring-indigo-300"
+                aria-invalid={!!errors.username}
               />
-              <p className="text-red-500 text-sm">
-                {RegistrationForm.formState.errors.fullName?.message}
-              </p>  
+              {errors.username && <p className="text-sm text-red-600 mt-1">{errors.username.message}</p>}
             </div>
 
-            {/* Email */}
+
+             {/* Email */}
             <div>
-              <Label>Email</Label>
+              <Label className="mb-1">Email</Label>
               <Input
                 type="email"
-                placeholder="Email address"
-                {...RegistrationForm.register("emailId")}
+                {...register("email")}
+                placeholder="Enter email"
+                className="ring-0 focus:ring-2 focus:ring-indigo-300"
+                aria-invalid={!!errors.email}
               />
-              <p className="text-red-500 text-sm">
-                {RegistrationForm.formState.errors.emailId?.message}
-              </p>
+              {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
             </div>
 
             {/* Password */}
-            <div className="space-y-2">
-              <Label>Password</Label>
-
-              <div className="relative">
+            <div>
+              <Label className="mb-1">Password</Label>
+              <div className="flex gap-3 items-center">
                 <Input
-                  type={showPassword ? "text" : "password"}
+                  type={showPass ? "text" : "password"}
+                  {...register("password")}
                   placeholder="Enter password"
-                  className="pr-10"
-                  {...RegistrationForm.register("password")}
+                  className="flex-1 ring-0 focus:ring-2 focus:ring-indigo-300"
+                  aria-invalid={!!errors.password}
                 />
-
                 <Button
                   type="button"
                   variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPass((s) => !s)}
+                  className="min-w-[74px] px-3 py-2 rounded-md border"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <EyeIcon size={20} />}
+                  {showPass ? "Hide" : "Show"}
                 </Button>
               </div>
-
-              <p className="text-red-500 text-sm">
-                {RegistrationForm.formState.errors.password?.message}
-              </p>
+              {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
             </div>
-          </CardContent>
 
-          <CardFooter>
-            <Button type="submit" className="py-4 w-full">
-              Register
-            </Button>
-          </CardFooter>
-        </form>
+            {/* Phone */}
+            <div>
+              <Label className="mb-1">Phone Number</Label>
+              <Input
+                {...register("phone")}
+                placeholder="10 digit phone number"
+                maxLength={10}
+                className="ring-0 focus:ring-2 focus:ring-indigo-300"
+                aria-invalid={!!errors.phone}
+              />
+              {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>}
+            </div>
+
+            {/* Age */}
+            <div>
+              <Label className="mb-1">Age</Label>
+              <Input
+                {...register("age")}
+                placeholder="Enter age"
+                inputMode="numeric"
+                className="ring-0 focus:ring-2 focus:ring-indigo-300"
+                aria-invalid={!!errors.age}
+              />
+              {errors.age && <p className="text-sm text-red-600 mt-1">{errors.age.message}</p>}
+            </div>
+
+            {/* Gender */}
+            <div>
+              <Label className="mb-1">Gender</Label>
+              <Select
+                value={genderValue}
+                onValueChange={(val) => setValue("gender", val, { shouldValidate: true })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.gender && <p className="text-sm text-red-600 mt-1">{errors.gender.message}</p>}
+            </div>
+
+            {/* City */}
+            <div>
+              <Label className="mb-1">City</Label>
+              <Input
+                {...register("city")}
+                placeholder="Enter city"
+                className="ring-0 focus:ring-2 focus:ring-indigo-300"
+                aria-invalid={!!errors.city}
+              />
+              {errors.city && <p className="text-sm text-red-600 mt-1">{errors.city.message}</p>}
+            </div>
+
+            <CardFooter className="px-0">
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-neutral-900 to-neutral-700 text-white py-3 rounded-xl shadow-md"
+                disabled={submitting}
+              >
+                {submitting ? "Registering..." : "Register"}
+              </Button>
+            </CardFooter>
+
+          </form>
+        </CardContent>
       </Card>
+
+      {/* small decorative image placeholder (optional) */}
+      {/* If you want to display the screenshot used for reference somewhere in the UI (development only), use the path below */}
+      {/* Screenshot path: /mnt/data/7fe36fc2-70fd-42bb-a309-bcdd5bf12abb.png */}
     </div>
   );
-};
-
-export default Page;
+}
