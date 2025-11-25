@@ -37,10 +37,10 @@ const Page = () => {
   }
 
   return (
-    <div className="p-6 flex justify-center">
+    <div className="flex justify-center items-center h-screen">
       <Card className="w-full max-w-md p-4">
         <CardHeader>
-          <CardTitle className=" flex ju font-bold text-blue-800 text-3xl">
+          <CardTitle className=" flex justify-center font-bold text-3xl">
             Registration Form
           </CardTitle>
         </CardHeader>
@@ -58,7 +58,7 @@ const Page = () => {
               />
               <p className="text-red-500 text-sm">
                 {RegistrationForm.formState.errors.fullName?.message}
-              </p>
+              </p>  
             </div>
 
             {/* Email */}
