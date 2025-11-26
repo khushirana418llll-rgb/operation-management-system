@@ -22,7 +22,7 @@ const loginSchema = z.object({
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
-const Page = () => {
+const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -185,4 +185,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default LoginPage;

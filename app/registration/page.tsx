@@ -60,6 +60,7 @@ export default function RegistrationForm() {
       console.log("Submitted data:", data);
       // show a simple success (replace with toast if you want)
       alert("Registration Successful!");
+
       reset();
     } catch (e) {
       console.error(e);
@@ -192,7 +193,7 @@ export default function RegistrationForm() {
             <CardFooter className="px-0">
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-neutral-900 to-neutral-700 text-white py-3 rounded-xl shadow-md"
+                className="w-full bg-linear-to-r from-neutral-900 to-neutral-700 text-white py-3 rounded-xl shadow-md"
                 disabled={submitting}
               >
                 {submitting ? "Registering..." : "Register"}
@@ -202,10 +203,6 @@ export default function RegistrationForm() {
           </form>
         </CardContent>
       </Card>
-
-      {/* small decorative image placeholder (optional) */}
-      {/* If you want to display the screenshot used for reference somewhere in the UI (development only), use the path below */}
-      {/* Screenshot path: /mnt/data/7fe36fc2-70fd-42bb-a309-bcdd5bf12abb.png */}
     </div>
   );
 }
