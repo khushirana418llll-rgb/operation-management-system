@@ -45,7 +45,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #000000;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -118,5 +118,52 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+::view-transition-group(root){
+  z-index: auto !important;
+}
+
+::view-transition-image-pair(root)
+{
+  isolation: isolate;
+  will-change: transform,opacity,scale;
+  z-index: 1;
+}
+   
+/* OLD PAGE LEAVING ANIMATION */
+::view-transition-old(root) {
+  z-index: 1;
+  animation: none !important;
+  animation: oldPageExit 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes oldPageExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0.5;
+    transform: translateY(-100px) scale(0.9);
+  }
+}
+
+/* NEW PAGE ENTERING */
+::view-transition-new(root) {
+  z-index: 2;
+  animation: none !important;
+  animation: newPageEnter 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes newPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

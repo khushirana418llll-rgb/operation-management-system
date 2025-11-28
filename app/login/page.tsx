@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,15 +48,15 @@ const LoginPage = () => {
         return;
       }
 
+
+
+      setLoading(false);
       toast.success("Login Successful", {
         style: {
           background: "#16a34a",
           color: "white",
         }
       });
-
-      setLoading(false);
-
       setTimeout(() => {
         redirect("/dashboard");
       }, 500);
@@ -75,11 +75,11 @@ const LoginPage = () => {
 
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-black">
-              Welcome
+              Welcome back
             </CardTitle>
 
             <div className="text-gray-600 text-sm">
-              Do not have an account yet? <Link href={"/registration"} className="text-blue-600 font-bold"> Sign up </Link>
+              <p>Please login to a admin dashboard</p>
             </div>
           </CardHeader>
 
@@ -117,13 +117,13 @@ const LoginPage = () => {
                 className="w-full text-lg py-3 mt-2 bg-black hover:bg-gray-800 text-white font-semibold transition rounded-xl flex justify-center"
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {loading ? "Loading..." : "Submit"}
+                {loading ? "Loading..." : "Sign  In"}
               </Button>
 
             </CardContent>
 
             <CardFooter>
-              <div className="w-full mt-6">
+              <div className="w-full mt-6 hidden">
                 {/* OR Divider */}
                 <div className="flex items-center w-full my-4">
                   <div className="flex-1 h-px bg-gray-600"></div>
